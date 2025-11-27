@@ -1,0 +1,29 @@
+
+users {
+	id uuid pk increments unique
+	email varchar()
+	password varchar()
+}
+
+columns {
+	id uuid pk increments unique
+	title varchar()
+	order integer def(0)
+	user_id uuid *> users.id
+}
+
+cards {
+	id uuid pk increments unique
+	title varchar()
+	order integer
+	column_id integer *> columns.id
+	content varchar()
+}
+
+comments {
+	id uuid pk increments unique
+	content varchar()
+	card_id uuid *> cards.id
+	order integer def(0)
+	user_id uuid *> users.id
+}
