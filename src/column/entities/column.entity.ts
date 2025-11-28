@@ -11,7 +11,7 @@ import { Card } from '../../card/entities/card.entity';
 @Entity('columns')
 export class Column {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @OrmColumn()
   title: string;
