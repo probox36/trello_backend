@@ -1,28 +1,28 @@
 
 users {
 	id uuid pk increments unique
-	email varchar()
-	password varchar()
+	email varchar
+	password varchar
 }
 
 columns {
 	id uuid pk increments unique
-	title varchar()
+	title varchar
 	order integer def(0)
 	user_id uuid *> users.id
 }
 
 cards {
 	id uuid pk increments unique
-	title varchar()
+	title varchar
 	order integer
-	column_id integer *> columns.id
-	content varchar()
+	column_id uuid *> columns.id
+	content varchar
 }
 
 comments {
 	id uuid pk increments unique
-	content varchar()
+	content varchar
 	card_id uuid *> cards.id
 	order integer def(0)
 	user_id uuid *> users.id
