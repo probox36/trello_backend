@@ -1,14 +1,17 @@
-import { IsEmail, IsNotEmpty, IsStrongPassword, IsUUID } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
 
 export class CreateUserDto {
-  @IsUUID()
-  id: string;
-
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Email cannot be empty' })
   @IsEmail()
   email: string;
 
-  @IsNotEmpty()
-  @IsStrongPassword({ minLength: 10, minNumbers: 1, minSymbols: 1 })
+  @IsNotEmpty({ message: 'Password cannot be empty' })
+  @IsStrongPassword(
+    { minLength: 10, minNumbers: 1, minSymbols: 1 },
+    {
+      message:
+        'Password should be at least 10 characters with 1+ special characters and 1+ digits',
+    },
+  )
   password: string;
 }
