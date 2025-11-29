@@ -17,24 +17,24 @@ import { ResponseUserDto } from './dto/response-user.dto';
 @Controller('users')
 export class UsersController {
   constructor(
-    private readonly usersService: UsersService,
+    private readonly service: UsersService,
     private readonly mapper: UserMapper,
   ) {}
 
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<ResponseUserDto> {
     const user = this.mapper.toEntity(dto);
-    return this.mapper.toDto(await this.usersService.create(user));
+    return this.mapper.toDto(await this.service.create(user));
   }
 
   @Get()
   async findAll(): Promise<ResponseUserDto[]> {
-    return (await this.usersService.findAll()).map((u) => this.mapper.toDto(u));
+    return (await this.service.findAll()).map((u) => this.mapper.toDto(u));
   }
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ResponseUserDto> {
-    return this.mapper.toDto(await this.usersService.findOne(id));
+    return this.mapper.toDto(await this.service.findOne(id));
   }
 
   @Patch(':id')
@@ -43,11 +43,11 @@ export class UsersController {
     @Body() dto: UpdateUserDto,
   ): Promise<ResponseUserDto> {
     const user = Object.assign(new User(), dto) as Partial<User>;
-    return this.mapper.toDto(await this.usersService.update(id, user));
+    return this.mapper.toDto(await this.service.update(id, user));
   }
 
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.remove(id);
+    return this.service.remove(id);
   }
 }

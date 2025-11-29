@@ -23,7 +23,7 @@ export class UsersService {
   async findOne(id: string): Promise<User> {
     const user = await this.repo.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException(`Пользователь с ID ${id} не найден.`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return user;
   }
@@ -36,7 +36,7 @@ export class UsersService {
       ...user,
     });
     if (!userToUpdate) {
-      throw new NotFoundException(`Пользователь с ID ${id} не найден.`);
+      throw new NotFoundException(`User with ID ${id} not found for update`);
     }
     return this.repo.save(userToUpdate);
   }
