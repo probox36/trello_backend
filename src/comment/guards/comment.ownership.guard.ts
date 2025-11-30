@@ -5,73 +5,65 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { ColumnService } from '../../column/column.service';
-import { CardService } from '../card.service';
 import { Request } from 'express';
+import { CommentService } from '../comment.service';
 
 interface JwtPayload {
   id: string;
   email: string;
 }
 
-interface CardParams {
+interface CommentParams {
   id?: string;
 }
 
 const exception = new ForbiddenException('You do not own the target resource');
 
 @Injectable()
-export class CardOwnershipGuard implements CanActivate {
+export class CommentOwnershipGuard implements CanActivate {
   constructor(
     private readonly columnService: ColumnService,
-    private readonly cardService: CardService,
+    private readonly commentService: CommentService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest() as Request & {
       user: JwtPayload;
     };
-    const params = request.params as CardParams;
+    const params = request.params as CommentParams;
     const currentUserId = request.user.id;
     const body = request.body as { columnId?: string };
 
     if (request.method === 'POST' && body.columnId) {
-      return this.checkColumnOwnership(body.columnId, currentUserId);
+      return this.checkUserEquality(body.columnId, currentUserId);
     }
 
     if (
       (request.method === 'PATCH' || request.method === 'DELETE') &&
       params.id
     ) {
-      return this.checkCardOwnership(params.id, currentUserId);
+      return this.checkCommentOwnership(params.id, currentUserId);
     }
 
     throw exception;
   }
 
-  private async checkColumnOwnership(
-    columnId: string,
-    userId: string,
-  ): Promise<boolean> {
-    const column = await this.columnService.findOne(columnId, {
-      user: true,
-    });
-
-    if (!column || column.user.id !== userId) {
+  private checkUserEquality(reqUserId: string, jwtUserId: string): boolean {
+    if (reqUserId !== jwtUserId) {
       throw exception;
     }
     return true;
   }
 
-  // Given object does not have a primary column, cannot transform it to database entity
-  private async checkCardOwnership(
-    cardId: string,
+  private async checkCommentOwnership(
+    commentId: string,
     userId: string,
   ): Promise<boolean> {
-    const card = await this.cardService.findOne(cardId, {
-      column: { user: true },
+    const comment = await this.commentService.findOne(commentId, {
+      user: true,
     });
 
-    if (!card || card.column.user.id !== userId) {
+    if (!comment || comment.user.id !== userId) {
       throw exception;
     }
     return true;

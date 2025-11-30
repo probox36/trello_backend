@@ -15,7 +15,7 @@ import { ColumnMapper } from './mapper/column.mapper';
 import { ResponseColumnDto } from './dto/response-column.dto';
 import { TrelloColumn } from './entities/column.entity';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard.service';
-import { ColumnOwnershipGuard } from './guards/ColumnOwnershipGuard';
+import { ColumnOwnershipGuard } from './guards/column.ownership.guard';
 
 @Controller('column')
 @UseGuards(JwtAuthGuard)
