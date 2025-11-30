@@ -9,6 +9,7 @@ export class UserMapper {
   toEntity(dto: CreateUserDto): User {
     return {
       ...dto,
+      id: undefined,
       columns: [],
       comments: [],
     };

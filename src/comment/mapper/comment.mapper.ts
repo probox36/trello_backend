@@ -11,6 +11,7 @@ export class CommentMapper {
   toEntity(dto: CreateCommentDto): Comment {
     return {
       ...dto,
+      id: undefined,
       card: { id: dto.cardId } as Card,
       user: { id: dto.userId } as User,
     };

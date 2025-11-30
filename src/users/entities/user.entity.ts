@@ -5,12 +5,12 @@ import { Comment } from '../../comment/entities/comment.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string | undefined;
 
   @Column()
   email: string;
 
-  @Column({ select: false })
+  @Column()
   password: string;
 
   @OneToMany(() => TrelloColumn, (column) => column.user)

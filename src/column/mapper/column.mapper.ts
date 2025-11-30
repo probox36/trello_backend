@@ -10,6 +10,7 @@ export class ColumnMapper {
   toEntity(dto: CreateColumnDto): Column {
     return {
       ...dto,
+      id: undefined,
       cards: [],
       user: { id: dto.userId } as User,
     };

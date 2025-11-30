@@ -5,7 +5,7 @@ import { Card } from '../../card/entities/card.entity';
 @Entity('comments')
 export class Comment {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string | undefined;
 
   @Column()
   content: string;

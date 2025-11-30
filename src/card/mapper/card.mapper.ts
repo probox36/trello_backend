@@ -10,6 +10,7 @@ export class CardMapper {
   toEntity(dto: CreateCardDto): Card {
     return {
       ...dto,
+      id: undefined,
       comments: [],
       column: { id: dto.columnId } as Column,
     };
