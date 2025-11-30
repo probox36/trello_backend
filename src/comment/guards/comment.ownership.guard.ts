@@ -28,11 +28,6 @@ export class CommentOwnershipGuard implements CanActivate {
     };
     const params = request.params as CommentParams;
     const currentUserId = request.user.id;
-    const body = request.body as { columnId?: string };
-
-    if (request.method === 'POST' && body.columnId) {
-      return this.checkUserEquality(body.columnId, currentUserId);
-    }
 
     if (
       (request.method === 'PATCH' || request.method === 'DELETE') &&
@@ -42,13 +37,6 @@ export class CommentOwnershipGuard implements CanActivate {
     }
 
     throw exception;
-  }
-
-  private checkUserEquality(reqUserId: string, jwtUserId: string): boolean {
-    if (reqUserId !== jwtUserId) {
-      throw exception;
-    }
-    return true;
   }
 
   private async checkCommentOwnership(
