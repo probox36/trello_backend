@@ -4,8 +4,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 interface JwtPayload {
-  sub?: string;
-  username?: string;
+  id?: string;
+  email?: string;
 }
 
 @Injectable()
@@ -18,15 +18,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  validate(payload: JwtPayload) {
-    if (!payload.sub || !payload.username) {
+  validate(payload: JwtPayload): JwtPayload {
+    if (!payload.id || !payload.email) {
       throw new UnauthorizedException(
         'Sub or username claims are missing from JWT',
       );
     }
     return {
-      userId: payload.sub,
-      username: payload.username,
+      id: payload.id,
+      email: payload.email,
     };
   }
 }
