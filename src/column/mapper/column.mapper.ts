@@ -1,4 +1,4 @@
-import { Column } from '../entities/column.entity';
+import { TrelloColumn } from '../entities/column.entity';
 import { Injectable } from '@nestjs/common';
 import { CreateColumnDto } from '../dto/create-column.dto';
 import { User } from '../../users/entities/user.entity';
@@ -7,7 +7,7 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ColumnMapper {
-  toEntity(dto: CreateColumnDto): Column {
+  toEntity(dto: CreateColumnDto): TrelloColumn {
     return {
       ...dto,
       id: undefined,
@@ -16,7 +16,7 @@ export class ColumnMapper {
     };
   }
 
-  toDto(column: Column): ResponseColumnDto {
+  toDto(column: TrelloColumn): ResponseColumnDto {
     return plainToInstance(ResponseColumnDto, column, {
       excludeExtraneousValues: true,
     });

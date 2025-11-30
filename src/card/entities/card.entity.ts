@@ -5,7 +5,7 @@ import {
   OneToMany,
   ManyToOne,
 } from 'typeorm';
-import { Column as TrelloColumn } from '../../column/entities/column.entity';
+import { TrelloColumn as TrelloColumn } from '../../column/entities/column.entity';
 import { Comment } from '../../comment/entities/comment.entity';
 
 @Entity('cards')

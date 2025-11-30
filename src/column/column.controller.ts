@@ -12,7 +12,7 @@ import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { ColumnMapper } from './mapper/column.mapper';
 import { ResponseColumnDto } from './dto/response-column.dto';
-import { Column } from './entities/column.entity';
+import { TrelloColumn } from './entities/column.entity';
 
 @Controller('column')
 export class ColumnController {
@@ -42,7 +42,10 @@ export class ColumnController {
     @Param('id') id: string,
     @Body() dto: UpdateColumnDto,
   ): Promise<ResponseColumnDto> {
-    const column = Object.assign(new Column(), dto) as Partial<Column>;
+    const column = Object.assign(
+      new TrelloColumn(),
+      dto,
+    ) as Partial<TrelloColumn>;
     return this.mapper.toDto(await this.service.update(id, column));
   }
 

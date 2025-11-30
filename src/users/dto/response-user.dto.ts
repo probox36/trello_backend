@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { Column } from '../../column/entities/column.entity';
+import { TrelloColumn } from '../../column/entities/column.entity';
 
 export class ResponseUserDto {
   @Expose()
@@ -12,14 +12,16 @@ export class ResponseUserDto {
   password: string;
 
   @Transform(({ value }) =>
-    Array.isArray(value) ? (value as Column[]).map((column) => column.id) : [],
+    Array.isArray(value)
+      ? (value as TrelloColumn[]).map((column) => column.id)
+      : [],
   )
   @Expose()
   columns: string[];
 
   @Transform(({ value }) =>
     Array.isArray(value)
-      ? (value as Column[]).map((comment) => comment.id)
+      ? (value as TrelloColumn[]).map((comment) => comment.id)
       : [],
   )
   @Expose()

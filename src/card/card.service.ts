@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Card } from './entities/card.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 
 @Injectable()
 export class CardService {
@@ -17,8 +18,14 @@ export class CardService {
     return this.repo.find();
   }
 
-  async findOne(id: string): Promise<Card> {
-    const card = await this.repo.findOneBy({ id });
+  async findOne(
+    id: string,
+    relations?: FindOptionsRelations<Card>,
+  ): Promise<Card> {
+    const card = await this.repo.findOne({
+      where: { id },
+      relations: relations,
+    });
     if (!card) {
       throw new NotFoundException(`Card with ID ${id} not found`);
     }

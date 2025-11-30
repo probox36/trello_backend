@@ -1,6 +1,6 @@
 import { CreateCardDto } from '../dto/create-card.dto';
 import { Card } from '../entities/card.entity';
-import { Column } from '../../column/entities/column.entity';
+import { TrelloColumn } from '../../column/entities/column.entity';
 import { ResponseCardDto } from '../dto/response-card.dto';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
@@ -12,7 +12,7 @@ export class CardMapper {
       ...dto,
       id: undefined,
       comments: [],
-      column: { id: dto.columnId } as Column,
+      column: { id: dto.columnId } as TrelloColumn,
     };
   }
 

@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Encrypter } from '@utils/encrypter';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 
 @Injectable()
 export class UsersService {
@@ -20,8 +21,14 @@ export class UsersService {
     return this.repo.find();
   }
 
-  async findOne(id: string): Promise<User> {
-    const user = await this.repo.findOneBy({ id });
+  async findOne(
+    id: string,
+    relations?: FindOptionsRelations<User>,
+  ): Promise<User> {
+    const user = await this.repo.findOne({
+      where: { id },
+      relations: relations,
+    });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }

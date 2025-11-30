@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Column as TrelloColumn } from '../../column/entities/column.entity';
+import { TrelloColumn as TrelloColumn } from '../../column/entities/column.entity';
 import { Comment } from '../../comment/entities/comment.entity';
 
 @Entity('users')

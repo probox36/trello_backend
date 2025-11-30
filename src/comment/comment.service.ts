@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 
 @Injectable()
 export class CommentService {
@@ -18,8 +19,14 @@ export class CommentService {
     return this.repo.find();
   }
 
-  async findOne(id: string): Promise<Comment> {
-    const comment = await this.repo.findOneBy({ id });
+  async findOne(
+    id: string,
+    relations?: FindOptionsRelations<Comment>,
+  ): Promise<Comment> {
+    const comment = await this.repo.findOne({
+      where: { id },
+      relations: relations,
+    });
     if (!comment) {
       throw new NotFoundException(`Comment with ID ${id} not found`);
     }

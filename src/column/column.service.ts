@@ -1,32 +1,42 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Column } from './entities/column.entity';
+import { TrelloColumn } from './entities/column.entity';
+import { FindOptionsRelations } from 'typeorm/find-options/FindOptionsRelations';
 
 @Injectable()
 export class ColumnService {
   constructor(
-    @InjectRepository(Column)
-    private repo: Repository<Column>,
+    @InjectRepository(TrelloColumn)
+    private repo: Repository<TrelloColumn>,
   ) {}
 
-  async create(column: Column): Promise<Column> {
+  async create(column: TrelloColumn): Promise<TrelloColumn> {
     return this.repo.save(column);
   }
 
-  async findAll(): Promise<Column[]> {
+  async findAll(): Promise<TrelloColumn[]> {
     return this.repo.find();
   }
 
-  async findOne(id: string): Promise<Column> {
-    const column = await this.repo.findOneBy({ id });
+  async findOne(
+    id: string,
+    relations?: FindOptionsRelations<TrelloColumn>,
+  ): Promise<TrelloColumn> {
+    const column = await this.repo.findOne({
+      where: { id },
+      relations: relations,
+    });
     if (!column) {
       throw new NotFoundException(`Column with ID ${id} not found`);
     }
     return column;
   }
 
-  async update(id: string, column: Partial<Column>): Promise<Column> {
+  async update(
+    id: string,
+    column: Partial<TrelloColumn>,
+  ): Promise<TrelloColumn> {
     const columnToUpdate = await this.repo.preload({
       id: id,
       ...column,

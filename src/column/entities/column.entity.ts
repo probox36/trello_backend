@@ -1,6 +1,6 @@
 import {
   Entity,
-  Column as OrmColumn,
+  Column,
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
@@ -9,14 +9,14 @@ import { User } from '../../users/entities/user.entity';
 import { Card } from '../../card/entities/card.entity';
 
 @Entity('columns')
-export class Column {
+export class TrelloColumn {
   @PrimaryGeneratedColumn('uuid')
   id: string | undefined;
 
-  @OrmColumn()
+  @Column()
   title: string;
 
-  @OrmColumn()
+  @Column()
   order: number;
 
   @ManyToOne(() => User, (user) => user.columns)
