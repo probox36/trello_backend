@@ -4,7 +4,6 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { ColumnService } from '../../column/column.service';
 import { Request } from 'express';
 import { CommentService } from '../comment.service';
 
@@ -21,10 +20,7 @@ const exception = new ForbiddenException('You do not own the target resource');
 
 @Injectable()
 export class CommentOwnershipGuard implements CanActivate {
-  constructor(
-    private readonly columnService: ColumnService,
-    private readonly commentService: CommentService,
-  ) {}
+  constructor(private readonly commentService: CommentService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest() as Request & {
