@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { ColumnService } from './column.service';
 import { CreateColumnDto } from './dto/create-column.dto';
@@ -13,14 +14,18 @@ import { UpdateColumnDto } from './dto/update-column.dto';
 import { ColumnMapper } from './mapper/column.mapper';
 import { ResponseColumnDto } from './dto/response-column.dto';
 import { TrelloColumn } from './entities/column.entity';
+import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard.service';
+import { ColumnOwnershipGuard } from './guards/ColumnOwnershipGuard';
 
 @Controller('column')
+@UseGuards(JwtAuthGuard)
 export class ColumnController {
   constructor(
     private readonly service: ColumnService,
     private readonly mapper: ColumnMapper,
   ) {}
 
+  @UseGuards(ColumnOwnershipGuard)
   @Post()
   async create(@Body() dto: CreateColumnDto): Promise<ResponseColumnDto> {
     const column = this.mapper.toEntity(dto);
@@ -37,6 +42,7 @@ export class ColumnController {
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
+  @UseGuards(ColumnOwnershipGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -49,6 +55,7 @@ export class ColumnController {
     return this.mapper.toDto(await this.service.update(id, column));
   }
 
+  @UseGuards(ColumnOwnershipGuard)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
     return this.service.remove(id);

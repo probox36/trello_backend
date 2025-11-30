@@ -32,11 +32,8 @@ export class CardOwnershipGuard implements CanActivate {
       user: JwtPayload;
     };
     const params = request.params as CardParams;
-    console.log('params:', JSON.stringify(params));
     const currentUserId = request.user.id;
-    console.log('currentUserId:', JSON.stringify(currentUserId));
     const body = request.body as { columnId?: string };
-    console.log('body:', JSON.stringify(body));
 
     if (request.method === 'POST' && body.columnId) {
       return this.checkColumnOwnership(body.columnId, currentUserId);
@@ -56,11 +53,9 @@ export class CardOwnershipGuard implements CanActivate {
     columnId: string,
     userId: string,
   ): Promise<boolean> {
-    console.log('Checking column ownership');
     const column = await this.columnService.findOne(columnId, {
       user: true,
     });
-    console.log('Found column:', JSON.stringify(column));
 
     if (!column || column.user.id !== userId) {
       throw exception;
@@ -73,11 +68,9 @@ export class CardOwnershipGuard implements CanActivate {
     cardId: string,
     userId: string,
   ): Promise<boolean> {
-    console.log('Checking card ownership');
     const card = await this.cardService.findOne(cardId, {
       column: { user: true },
     });
-    console.log('Found card:', JSON.stringify(card));
 
     if (!card || card.column.user.id !== userId) {
       throw exception;
