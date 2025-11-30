@@ -6,6 +6,7 @@ import { ColumnModule } from './column/column.module';
 import { CommentModule } from './comment/comment.module';
 import { CardModule } from './card/card.module';
 import { typeOrmConfig } from '../db/datasource';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -17,8 +18,7 @@ import { typeOrmConfig } from '../db/datasource';
     ColumnModule,
     CommentModule,
     CardModule,
+    AuthModule,
   ],
-  // controllers: [AppController],
-  // providers: [AppService],
 })
 export class AppModule {}

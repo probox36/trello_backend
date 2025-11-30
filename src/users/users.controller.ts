@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -30,6 +31,11 @@ export class UsersController {
   @Get()
   async findAll(): Promise<ResponseUserDto[]> {
     return (await this.service.findAll()).map((u) => this.mapper.toDto(u));
+  }
+
+  @Get('by-email')
+  async findByEmail(@Query('email') email: string): Promise<ResponseUserDto> {
+    return this.mapper.toDto(await this.service.findByEmail(email));
   }
 
   @Get(':id')
