@@ -120,6 +120,7 @@ export class CardController {
 
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(CardOwnershipGuard)
+  @Delete(':id')
   @ApiOperation({ summary: 'Delete a card by ID' })
   @ApiNoContentResponse({
     description: 'The card was successfully deleted. No content returned.',
@@ -131,7 +132,6 @@ export class CardController {
     description: 'Forbidden. The authenticated user does not own this card.',
   })
   @UseGuards(CardOwnershipGuard)
-  @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
     return this.service.remove(id);
   }
