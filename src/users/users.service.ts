@@ -47,8 +47,8 @@ export class UsersService {
     user.password &&= await Encrypter.hash(user.password);
 
     const userToUpdate = await this.repo.preload({
-      id: id,
       ...user,
+      id: id,
     });
     if (!userToUpdate) {
       throw new NotFoundException(`User with ID ${id} not found for update`);

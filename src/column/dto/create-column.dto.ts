@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, IsUUID, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateColumnDto {
@@ -19,6 +19,7 @@ export class CreateColumnDto {
   })
   @IsNotEmpty({ message: 'Column order cannot be empty' })
   @IsInt({ message: 'Column title should be an integer' })
+  @Min(0, { message: 'Order should be >= 0' })
   order: number;
 
   @ApiProperty({

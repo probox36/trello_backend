@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -88,7 +89,9 @@ export class CardController {
   @ApiNotFoundResponse({
     description: 'Not Found. Card with the given ID does not exist.',
   })
-  async findOne(@Param('id') id: string): Promise<ResponseCardDto> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ResponseCardDto> {
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -111,7 +114,7 @@ export class CardController {
     description: 'Forbidden. The authenticated user does not own this card.',
   })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCardDto,
   ): Promise<ResponseCardDto> {
     const card = Object.assign(new Card(), dto) as Partial<Card>;
@@ -132,7 +135,7 @@ export class CardController {
     description: 'Forbidden. The authenticated user does not own this card.',
   })
   @UseGuards(CardOwnershipGuard)
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.service.remove(id);
   }
 }

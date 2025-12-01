@@ -44,8 +44,8 @@ export class ColumnOwnershipGuard implements CanActivate {
     throw exception;
   }
 
-  private checkUserEquality(reqUserId: string, JwtUserId: string): boolean {
-    if (reqUserId !== JwtUserId) {
+  private checkUserEquality(reqUserId: string, jwtUserId: string): boolean {
+    if (reqUserId !== jwtUserId) {
       throw exception;
     }
     return true;
@@ -58,7 +58,6 @@ export class ColumnOwnershipGuard implements CanActivate {
     const column = await this.columnService.findOne(columnId, {
       user: true,
     });
-
     if (!column || column.user.id !== userId) {
       throw exception;
     }

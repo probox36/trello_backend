@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TrelloColumn } from './entities/column.entity';
@@ -12,7 +16,16 @@ export class ColumnService {
   ) {}
 
   async create(column: TrelloColumn): Promise<TrelloColumn> {
-    return this.repo.save(column);
+    try {
+      return await this.repo.save(column);
+    } catch (error) {
+      if ((error as { code: string })?.code === '23503') {
+        throw new BadRequestException(
+          'One of the child entities does not exist',
+        );
+      }
+      throw error;
+    }
   }
 
   async findAll(): Promise<TrelloColumn[]> {
@@ -38,8 +51,8 @@ export class ColumnService {
     column: Partial<TrelloColumn>,
   ): Promise<TrelloColumn> {
     const columnToUpdate = await this.repo.preload({
-      id: id,
       ...column,
+      id: id,
     });
     if (!columnToUpdate) {
       throw new NotFoundException(`Column with ID ${id} not found for update`);

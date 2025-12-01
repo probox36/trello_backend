@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -84,7 +85,9 @@ export class CommentController {
     description: 'Not Found. Comment with the given ID does not exist.',
   })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ResponseCommentDto> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ResponseCommentDto> {
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -107,7 +110,7 @@ export class CommentController {
   @UseGuards(CommentOwnershipGuard)
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCommentDto,
   ): Promise<ResponseCommentDto> {
     const comment = Object.assign(new Comment(), dto) as Partial<Comment>;
@@ -126,7 +129,7 @@ export class CommentController {
   })
   @UseGuards(CommentOwnershipGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.service.remove(id);
   }
 }

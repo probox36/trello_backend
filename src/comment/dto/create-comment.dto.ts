@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, IsUUID, Min } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCommentDto {
@@ -13,6 +13,7 @@ export class CreateCommentDto {
 
   @IsNotEmpty({ message: 'Comment order cannot be empty' })
   @IsInt({ message: 'Comment order should be an integer' })
+  @Min(0, { message: 'Order should be >= 0' })
   @ApiProperty({
     description: 'The display order (position) of the comment within the card',
     example: 0,

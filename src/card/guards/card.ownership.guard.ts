@@ -62,7 +62,6 @@ export class CardOwnershipGuard implements CanActivate {
     return true;
   }
 
-  // Given object does not have a primary column, cannot transform it to database entity
   private async checkCardOwnership(
     cardId: string,
     userId: string,

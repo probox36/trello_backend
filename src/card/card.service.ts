@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Card } from './entities/card.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -10,8 +14,18 @@ export class CardService {
     @InjectRepository(Card)
     private repo: Repository<Card>,
   ) {}
+
   async create(card: Card): Promise<Card> {
-    return this.repo.save(card);
+    try {
+      return await this.repo.save(card);
+    } catch (error) {
+      if ((error as { code: string })?.code === '23503') {
+        throw new BadRequestException(
+          'One of the child entities does not exist',
+        );
+      }
+      throw error;
+    }
   }
 
   async findAll(): Promise<Card[]> {
@@ -34,8 +48,8 @@ export class CardService {
 
   async update(id: string, card: Partial<Card>): Promise<Card> {
     const cardToUpdate = await this.repo.preload({
-      id: id,
       ...card,
+      id: id,
     });
     if (!cardToUpdate) {
       throw new NotFoundException(`Card with ID ${id} not found for update`);

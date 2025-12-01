@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   UseGuards,
@@ -85,7 +86,9 @@ export class ColumnController {
     description: 'Not Found. Column with the given ID does not exist.',
   })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ResponseColumnDto> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ResponseColumnDto> {
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -108,7 +111,7 @@ export class ColumnController {
     description: 'Forbidden. The authenticated user does not own this column.',
   })
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateColumnDto,
   ): Promise<ResponseColumnDto> {
     const column = Object.assign(
@@ -130,7 +133,7 @@ export class ColumnController {
   @ApiForbiddenResponse({
     description: 'Forbidden. The authenticated user does not own this column.',
   })
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.service.remove(id);
   }
 }

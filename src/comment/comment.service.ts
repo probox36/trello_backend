@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './entities/comment.entity';
@@ -11,8 +15,17 @@ export class CommentService {
     private repo: Repository<Comment>,
   ) {}
 
-  async create(createCommentDto: Comment): Promise<Comment> {
-    return await this.repo.save(createCommentDto);
+  async create(comment: Comment): Promise<Comment> {
+    try {
+      return await this.repo.save(comment);
+    } catch (error) {
+      if ((error as { code: string })?.code === '23503') {
+        throw new BadRequestException(
+          'One of the child entities does not exist',
+        );
+      }
+      throw error;
+    }
   }
 
   async findAll(): Promise<Comment[]> {
@@ -35,8 +48,8 @@ export class CommentService {
 
   async update(id: string, comment: Partial<Comment>): Promise<Comment> {
     const commentToUpdate = await this.repo.preload({
-      id: id,
       ...comment,
+      id: id,
     });
     if (!commentToUpdate) {
       throw new NotFoundException(`Comment with ID ${id} not found for update`);

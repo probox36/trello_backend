@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -104,7 +105,9 @@ export class UsersController {
   })
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ResponseUserDto> {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<ResponseUserDto> {
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -130,7 +133,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<ResponseUserDto> {
     const user = Object.assign(new User(), dto) as Partial<User>;
@@ -153,7 +156,7 @@ export class UsersController {
   })
   @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.service.remove(id);
   }
 }
