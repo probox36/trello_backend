@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
 import { Encrypter } from '@utils/encrypter';
@@ -16,11 +16,20 @@ export class AuthService {
     private service: UsersService,
   ) {}
 
+  private readonly logger = new Logger(AuthService.name);
+
   async getToken(dto: LoginDto): Promise<string> {
+    this.logger.log(`Processing token acquisition request for ${dto.email}`);
     const result = await this.checkCredentials(dto);
     if (!result.passwordMatches) {
+      this.logger.log(
+        `Credentials check failed for ${dto.email}. Cancelling token generation`,
+      );
       throw new UnauthorizedException('Wrong email or password');
     }
+    this.logger.log(
+      `Credentials check succeeded for ${dto.email}. Providing token`,
+    );
     const payload = { email: dto.email, id: result.userId };
     return this.generator.sign(payload);
   }
