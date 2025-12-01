@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -39,6 +40,8 @@ import {
 @UseGuards(JwtAuthGuard)
 @Controller('comment')
 export class CommentController {
+  private readonly logger = new Logger(CommentController.name);
+
   constructor(
     private readonly service: CommentService,
     private readonly mapper: CommentMapper,
@@ -58,6 +61,9 @@ export class CommentController {
   })
   @Post()
   async create(@Body() dto: CreateCommentDto): Promise<ResponseCommentDto> {
+    this.logger.log(
+      `Handling create request with data: ${JSON.stringify(dto)}`,
+    );
     const comment = this.mapper.toEntity(dto);
     return this.mapper.toDto(await this.service.create(comment));
   }
@@ -73,6 +79,7 @@ export class CommentController {
   })
   @Get()
   async findAll(): Promise<ResponseCommentDto[]> {
+    this.logger.log('Handling findAll request');
     return (await this.service.findAll()).map((c) => this.mapper.toDto(c));
   }
 
@@ -88,6 +95,7 @@ export class CommentController {
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ResponseCommentDto> {
+    this.logger.log(`Handling findOne request for id: ${id}`);
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -113,6 +121,9 @@ export class CommentController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCommentDto,
   ): Promise<ResponseCommentDto> {
+    this.logger.log(
+      `Handling update request for id: ${id} with data: ${JSON.stringify(dto)}`,
+    );
     const comment = Object.assign(new Comment(), dto) as Partial<Comment>;
     return this.mapper.toDto(await this.service.update(id, comment));
   }
@@ -130,6 +141,7 @@ export class CommentController {
   @UseGuards(CommentOwnershipGuard)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    this.logger.log(`Handling remove request for id: ${id}`);
     return this.service.remove(id);
   }
 }

@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -41,6 +42,8 @@ import {
 @Controller('card')
 @UseGuards(JwtAuthGuard)
 export class CardController {
+  private readonly logger = new Logger(CardController.name);
+
   constructor(
     private readonly service: CardService,
     private readonly mapper: CardMapper,
@@ -63,6 +66,9 @@ export class CardController {
   @UseGuards(CardOwnershipGuard)
   @Post()
   async create(@Body() dto: CreateCardDto): Promise<ResponseCardDto> {
+    this.logger.log(
+      `Handling create request with data: ${JSON.stringify(dto)}`,
+    );
     const card = this.mapper.toEntity(dto);
     return this.mapper.toDto(await this.service.create(card));
   }
@@ -77,6 +83,7 @@ export class CardController {
   })
   @Get()
   async findAll(): Promise<ResponseCardDto[]> {
+    this.logger.log('Handling findAll request');
     return (await this.service.findAll()).map((c) => this.mapper.toDto(c));
   }
 
@@ -92,6 +99,7 @@ export class CardController {
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ResponseCardDto> {
+    this.logger.log(`Handling findOne request for id: ${id}`);
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -117,6 +125,9 @@ export class CardController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateCardDto,
   ): Promise<ResponseCardDto> {
+    this.logger.log(
+      `Handling update request for id: ${id} with data: ${JSON.stringify(dto)}`,
+    );
     const card = Object.assign(new Card(), dto) as Partial<Card>;
     return this.mapper.toDto(await this.service.update(id, card));
   }
@@ -136,6 +147,7 @@ export class CardController {
   })
   @UseGuards(CardOwnershipGuard)
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    this.logger.log(`Handling remove request for id: ${id}`);
     return this.service.remove(id);
   }
 }

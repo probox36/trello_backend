@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -37,6 +38,8 @@ import {
 @ApiTags('User Management')
 @Controller('users')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
+
   constructor(
     private readonly service: UsersService,
     private readonly mapper: UserMapper,
@@ -53,6 +56,9 @@ export class UsersController {
   })
   @Post()
   async create(@Body() dto: CreateUserDto): Promise<ResponseUserDto> {
+    this.logger.log(
+      `Handling create request with data: ${JSON.stringify({ ...dto, password: '****' })}`,
+    );
     const user = this.mapper.toEntity(dto);
     return this.mapper.toDto(await this.service.create(user));
   }
@@ -71,6 +77,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<ResponseUserDto[]> {
+    this.logger.log('Handling findAll request');
     return (await this.service.findAll()).map((u) => this.mapper.toDto(u));
   }
 
@@ -91,6 +98,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('by-email')
   async findByEmail(@Query('email') email: string): Promise<ResponseUserDto> {
+    this.logger.log(`Handling findByEmail request for email: ${email}`);
     return this.mapper.toDto(await this.service.findByEmail(email));
   }
 
@@ -108,11 +116,11 @@ export class UsersController {
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ResponseUserDto> {
+    this.logger.log(`Handling findOne request for id: ${id}`);
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
   @ApiBearerAuth('access-token')
-  @Patch(':id')
   @ApiOperation({ summary: 'Update specific fields of a user by ID' })
   @ApiBody({
     type: UpdateUserDto,
@@ -136,6 +144,9 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateUserDto,
   ): Promise<ResponseUserDto> {
+    this.logger.log(
+      `Handling update request for id: ${id} with data: ${JSON.stringify({ ...dto, password: '****' })}`,
+    );
     const user = Object.assign(new User(), dto) as Partial<User>;
     return this.mapper.toDto(await this.service.update(id, user));
   }
@@ -157,6 +168,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, UserOwnershipGuard)
   @Delete(':id')
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    this.logger.log(`Handling remove request for id: ${id}`);
     return this.service.remove(id);
   }
 }

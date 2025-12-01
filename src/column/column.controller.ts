@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -39,6 +40,8 @@ import {
 @Controller('column')
 @UseGuards(JwtAuthGuard)
 export class ColumnController {
+  private readonly logger = new Logger(ColumnController.name);
+
   constructor(
     private readonly service: ColumnService,
     private readonly mapper: ColumnMapper,
@@ -60,6 +63,7 @@ export class ColumnController {
       'Forbidden. The authenticated user is trying to create a column for a different user.',
   })
   async create(@Body() dto: CreateColumnDto): Promise<ResponseColumnDto> {
+    this.logger.log(`Handling create request with data: ${JSON.stringify(dto)}`);
     const column = this.mapper.toEntity(dto);
     return this.mapper.toDto(await this.service.create(column));
   }
@@ -74,6 +78,7 @@ export class ColumnController {
     isArray: true,
   })
   async findAll(): Promise<ResponseColumnDto[]> {
+    this.logger.log('Handling findAll request');
     return (await this.service.findAll()).map((c) => this.mapper.toDto(c));
   }
 
@@ -89,6 +94,7 @@ export class ColumnController {
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<ResponseColumnDto> {
+    this.logger.log(`Handling findOne request for id: ${id}`);
     return this.mapper.toDto(await this.service.findOne(id));
   }
 
@@ -114,6 +120,9 @@ export class ColumnController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdateColumnDto,
   ): Promise<ResponseColumnDto> {
+    this.logger.log(
+      `Handling update request for id: ${id} with data: ${JSON.stringify(dto)}`,
+    );
     const column = Object.assign(
       new TrelloColumn(),
       dto,
@@ -134,6 +143,7 @@ export class ColumnController {
     description: 'Forbidden. The authenticated user does not own this column.',
   })
   async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    this.logger.log(`Handling remove request for id: ${id}`);
     return this.service.remove(id);
   }
 }
